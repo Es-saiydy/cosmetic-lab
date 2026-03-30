@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import API_URL from "../api";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -10,9 +11,10 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setMessage("");
 
     try {
-      const res = await fetch("http://localhost:5001/api/users/login", {
+      const res = await fetch(`${API_URL}/api/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,18 +31,21 @@ function Login() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         setMessage("✅ Connexion réussie");
-        navigate("/dashboard");
+
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 500);
       } else {
-        setMessage("❌ " + (data.message || data.error || "Erreur"));
+        setMessage("❌ " + (data.message || data.error || "Erreur de connexion"));
       }
     } catch (error) {
-      setMessage("❌ " + error.message);
+      setMessage("❌ Erreur serveur : " + error.message);
     }
   };
 
   return (
     <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <h1>Login</h1>
+      <h1>Connexion</h1>
 
       <form onSubmit={handleLogin}>
         <input
@@ -48,24 +53,28 @@ function Login() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
-        <br /><br />
+        <br/>
+        <br/>
 
         <input
           type="password"
           placeholder="Mot de passe"
           value={motDePasse}
           onChange={(e) => setMotDePasse(e.target.value)}
+          required
         />
-        <br /><br />
+        <br/>
+        <br/>
 
-        <button type="submit">Login</button>
+        <button type="submit">Se connecter</button>
       </form>
 
-      <p>{message}</p>
+      {message && <p>{message}</p>}
 
       <p>
-        Pas de compte ? <Link to="/register">S'inscrire</Link>
+        Pas encore de compte ? <Link to="/register">S'inscrire</Link>
       </p>
     </div>
   );

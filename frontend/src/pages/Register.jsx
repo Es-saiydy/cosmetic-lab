@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import API_URL from "../api";
 
 function Register() {
   const [nom, setNom] = useState("");
@@ -12,9 +13,10 @@ function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setMessage("");
 
     try {
-      const res = await fetch("http://localhost:5001/api/users/register", {
+      const res = await fetch(`${API_URL}/api/users/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,20 +33,21 @@ function Register() {
 
       if (res.ok) {
         setMessage("✅ Inscription réussie");
+
         setTimeout(() => {
           navigate("/login");
         }, 1000);
       } else {
-        setMessage("❌ " + (data.message || data.error || "Erreur"));
+        setMessage("❌ " + (data.message || data.error || "Erreur d'inscription"));
       }
     } catch (error) {
-      setMessage("❌ " + error.message);
+      setMessage("❌ Erreur serveur : " + error.message);
     }
   };
 
   return (
     <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <h1>Register</h1>
+      <h1>Inscription</h1>
 
       <form onSubmit={handleRegister}>
         <input
@@ -52,37 +55,45 @@ function Register() {
           placeholder="Nom"
           value={nom}
           onChange={(e) => setNom(e.target.value)}
+          required
         />
-        <br /><br />
+        <br/>
+        <br/>
 
         <input
           type="text"
           placeholder="Prénom"
           value={prenom}
           onChange={(e) => setPrenom(e.target.value)}
+          required
         />
-        <br /><br />
+        <br />
+        <br />
 
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
-        <br /><br />
+        <br />
+        <br />
 
         <input
           type="password"
           placeholder="Mot de passe"
           value={motDePasse}
           onChange={(e) => setMotDePasse(e.target.value)}
+          required
         />
-        <br /><br />
+        <br/>
+        <br/>
 
-        <button type="submit">Register</button>
+        <button type="submit">S'inscrire</button>
       </form>
 
-      <p>{message}</p>
+      {message && <p>{message}</p>}
 
       <p>
         Déjà un compte ? <Link to="/login">Se connecter</Link>
