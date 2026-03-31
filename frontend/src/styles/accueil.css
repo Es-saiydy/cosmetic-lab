@@ -1,0 +1,105 @@
+* {
+  box-sizing: border-box;
+}
+
+.home-page {
+  min-height: 100vh;
+  background: #f5f4fb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.home-card,
+.about-card {
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+  background: transparent;
+}
+
+.home-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.home-logo {
+  font-size: 34px;
+}
+
+.home-brand-text {
+  font-size: 24px;
+  font-weight: 600;
+  color: #23395d;
+}
+
+.home-title {
+  font-size: 48px;
+  font-weight: 600;
+  margin: 0 0 32px;
+  color: #2f3542;
+}
+
+.home-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.home-button {
+  width: 260px;
+  height: 46px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
+.home-button.primary {
+  background: linear-gradient(90deg, #2f6fb3, #3d82c8);
+  color: white;
+  box-shadow: 0 6px 14px rgba(47, 111, 179, 0.2);
+}
+
+.home-button.secondary {
+  background: white;
+  color: #4b5563;
+  border: 1px solid #d9dde7;
+}
+
+.home-button:hover {
+  opacity: 0.97;
+}
+
+.about-text {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 18px;
+}
+
+.home-bottom-text {
+  margin-top: 70px;
+  font-size: 16px;
+  color: #7b8190;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .home-title {
+    font-size: 38px;
+  }
+
+  .home-button {
+    width: 100%;
+    max-width: 260px;
+  }
+}
