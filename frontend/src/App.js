@@ -1,23 +1,27 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import ProtectedRoute from "./components/ProtectedRoute";
+import Accueil from "./pages/accueil";
+import About from "./pages/About";
 import CreationProduit from "./pages/CreationProduit";
 import Resultat from "./pages/Resultat";
-import About from "./pages/About";
-import Accueil from "./pages/accueil";
+import MiniJeu2 from "./pages/MiniJeu2";
 
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Routes publiques */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/about" element={<About />} />
         <Route path="/" element={<Accueil />} />
 
+        {/* Routes protégées (il faut être connecté) */}
         <Route
           path="/dashboard"
           element={
@@ -34,7 +38,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-    <Route
+        <Route
           path="/resultat"
           element={
             <ProtectedRoute>
@@ -42,7 +46,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/mini-jeu-2"
+          element={
+            <ProtectedRoute>
+              <MiniJeu2 />
+            </ProtectedRoute>
+          }
+        />
 
+        {/* Redirection par défaut */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
