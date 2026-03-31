@@ -82,7 +82,7 @@ cd cosmetic-lab
 
  - Serveur accessible sur :
 
-http://localhost:5000
+http://localhost:5001
 
 - Test de connexion PostgreSQL
 
@@ -121,3 +121,52 @@ Utilisation du token pour accéder aux routes protégées
 - Authentification JWT opérationnelle
 - Connexion base de données validée
 - Tests réalisés avec Postman
+
+---
+
+
+## Fonctionnalités actuelles
+
+L’application permet actuellement de :
+
+- créer un compte utilisateur
+- se connecter à l’application
+- accéder à une page d’accueil
+- consulter le dashboard des mini-jeux
+- jouer au mini-jeu: Création d’un produit cosmétique
+- sélectionner un problème de peau et des ingrédients
+- calculer un score à la fin du mini-jeu
+- enregistrer la partie et le score dans la base de données
+- afficher une page de résultat
+
+## Structure du projet
+
+cosmetic-lab/
+- frontend/
+  - src/pages
+  - src/components
+  - src/styles
+- backend/
+  - config
+  - controllers
+  - routes
+  - middleware
+
+## Frontend
+
+Le frontend a été développé avec **React**.
+
+Pages principales actuellement disponibles :
+- Accueil
+- Connexion
+- Inscription
+- Dashboard
+- CréationProduit
+- Résultat
+
+Pour lancer le frontend :
+
+```bash
+cd frontend
+npm install
+npm start

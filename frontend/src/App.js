@@ -5,16 +5,18 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CreationProduit from "./pages/CreationProduit";
 import Resultat from "./pages/Resultat";
+import About from "./pages/About";
+import Accueil from "./pages/accueil";
 
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/resultat" element={<Resultat />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/" element={<Accueil />} />
 
         <Route
           path="/dashboard"
@@ -32,6 +34,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+    <Route
+          path="/resultat"
+          element={
+            <ProtectedRoute>
+              <Resultat />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
