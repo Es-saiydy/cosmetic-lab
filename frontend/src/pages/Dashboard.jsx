@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API_URL from "../api";
+import "../styles/dashboard.css";
+import { LuGamepad2 } from "react-icons/lu";
+import { FaFlask, FaMicroscope, FaPuzzlePiece } from "react-icons/fa";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -18,10 +21,10 @@ function Dashboard() {
         if (res.ok) {
           setMiniJeux(data);
         } else {
-          setMessage("❌ Impossible de charger les mini-jeux");
+          setMessage("Impossible de charger les mini-jeux.");
         }
       } catch (error) {
-        setMessage("❌ Erreur serveur : " + error.message);
+        setMessage("Erreur serveur : " + error.message);
       }
     };
 
@@ -34,43 +37,65 @@ function Dashboard() {
     navigate("/login");
   };
 
+  const handlePlay = (jeu) => {
+    if (jeu.id_mini_jeu === 1) {
+      navigate("/creation-produit");
+    } else {
+      alert("Ce mini-jeu sera bientôt disponible.");
+    }
+  };
+
+  const getIcon = (jeu) => {
+    if (jeu.id_mini_jeu === 1) return <FaFlask />;
+    if (jeu.id_mini_jeu === 2) return <FaPuzzlePiece />;
+    if (jeu.id_mini_jeu === 3) return <FaMicroscope />;
+
+  return <LuGamepad2 />;
+};
+
   return (
-    <div style={{ textAlign: "center", marginTop: "60px" }}>
-      <h1>Dashboard</h1>
-
-      <p>
-        Bienvenue {user ? `${user.prenom} ${user.nom}` : "utilisateur"}
-      </p>
-
-      <h2>Mini-jeux disponibles</h2>
-
-      {message && <p>{message}</p>}
-
-      {miniJeux.length === 0 ? (
-        <p>Chargement...</p>
-      ) : (
-        miniJeux.map((jeu) => (
-          <div
-            key={jeu.id_mini_jeu}
-            style={{
-              border: "1px solid #ccc",
-              padding: "15px",
-              margin: "15px auto",
-              width: "300px",
-              borderRadius: "10px",
-            }}
-          >
-            <h3>{jeu.nom}</h3>
-            <p>{jeu.description}</p>
-            <button onClick={() => navigate("/creation-produit")}>
-                Jouer
-            </button>
+    <div className="dashboard-page">
+      <div className="dashboard-container">
+        <div className="dashboard-topbar">
+          <div className="dashboard-brand">
+            <span className="dashboard-logo">⚗️</span>
+            <span className="dashboard-brand-text">Cosmetic Lab</span>
           </div>
-        ))
-      )}
 
-      <br />
-      <button onClick={handleLogout}>Se déconnecter</button>
+          <button className="dashboard-logout" onClick={handleLogout}>
+            Se déconnecter
+          </button>
+        </div>
+
+        <div className="dashboard-hero">
+          <h1>
+            Bienvenue {user ? `${user.prenom} ${user.nom}` : "dans Cosmetic Lab"}
+          </h1>
+          <p>
+            Découvrez nos mini-jeux pédagogiques pour apprendre les bases de la
+            cosmétique industrielle de manière interactive, ludique et progressive.
+          </p>
+        </div>
+
+        <h2 className="dashboard-section-title">Mini-jeux disponibles</h2>
+
+        {message && <p className="dashboard-message">{message}</p>}
+
+        {miniJeux.length === 0 ? (
+          <p className="dashboard-empty">Chargement des mini-jeux...</p>
+        ) : (
+          <div className="dashboard-grid">
+            {miniJeux.map((jeu) => (
+              <div key={jeu.id_mini_jeu} className="dashboard-card">
+                <div className="dashboard-card-icon">{getIcon(jeu)}</div>
+                <h3>{jeu.nom}</h3>
+                <p>{jeu.description}</p>
+                <button onClick={() => handlePlay(jeu)}>Jouer</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
