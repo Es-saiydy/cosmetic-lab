@@ -24,7 +24,6 @@ function Dashboard() {
       fontFamily: "Arial, sans-serif",
       textAlign: "center"
     }}>
-      
       <h1 style={{ fontSize: "42px", color: "#222", marginBottom: "8px" }}>Dashboard</h1>
       
       <p style={{ fontSize: "20px", color: "#555", marginBottom: "50px" }}>
@@ -35,7 +34,7 @@ function Dashboard() {
         Mini-jeux disponibles
       </h2>
 
-      {/* Card 1 */}
+      {/* Card 1 - Création produit */}
       <div style={{
         background: "#fff",
         borderRadius: "16px",
@@ -51,22 +50,13 @@ function Dashboard() {
         </p>
         <button 
           onClick={() => handlePlay(1)}
-          style={{
-            width: "100%",
-            padding: "14px",
-            background: "#1976d2",
-            color: "white",
-            border: "none",
-            borderRadius: "10px",
-            fontSize: "16px",
-            cursor: "pointer"
-          }}
+          style={{ width: "100%", padding: "14px", background: "#1976d2", color: "white", border: "none", borderRadius: "10px", fontSize: "16px", cursor: "pointer" }}
         >
           Jouer
         </button>
       </div>
 
-      {/* Card 2 */}
+      {/* Card 2 - MiniJeu 2 */}
       <div style={{
         background: "#fff",
         borderRadius: "16px",
@@ -82,22 +72,13 @@ function Dashboard() {
         </p>
         <button 
           onClick={() => handlePlay(2)}
-          style={{
-            width: "100%",
-            padding: "14px",
-            background: "#1976d2",
-            color: "white",
-            border: "none",
-            borderRadius: "10px",
-            fontSize: "16px",
-            cursor: "pointer"
-          }}
+          style={{ width: "100%", padding: "14px", background: "#1976d2", color: "white", border: "none", borderRadius: "10px", fontSize: "16px", cursor: "pointer" }}
         >
           Jouer
         </button>
       </div>
 
-      {/* Card 3 */}
+      {/* Card 3 - MiniJeu 3 */}
       <div style={{
         background: "#fff",
         borderRadius: "16px",
@@ -113,16 +94,7 @@ function Dashboard() {
         </p>
         <button 
           onClick={() => handlePlay(3)}
-          style={{
-            width: "100%",
-            padding: "14px",
-            background: "#1976d2",
-            color: "white",
-            border: "none",
-            borderRadius: "10px",
-            fontSize: "16px",
-            cursor: "pointer"
-          }}
+          style={{ width: "100%", padding: "14px", background: "#1976d2", color: "white", border: "none", borderRadius: "10px", fontSize: "16px", cursor: "pointer" }}
         >
           Jouer
         </button>
