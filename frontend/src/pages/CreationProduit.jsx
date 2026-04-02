@@ -1,113 +1,188 @@
 import { useState } from "react";
-import API_URL from "../api";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../api";
+import "../styles/creationProduit.css";
 
 function CreationProduit() {
-  const [probleme, setProbleme] = useState("");
-  const [ingredientsSelectionnes, setIngredientsSelectionnes] = useState([]);
-  const [score, setScore] = useState(null);
-  const [message, setMessage] = useState("");
-  const [sauvegardeMessage, setSauvegardeMessage] = useState("");
   const navigate = useNavigate();
 
-  const ingredients = [
-    { id: 1, nom: "Acide salicylique" },
-    { id: 2, nom: "Niacinamide" },
-    { id: 3, nom: "Acide hyaluronique" },
-    { id: 4, nom: "Glycérine" },
-    { id: 5, nom: "Parfum" },
-  ];
+  const [probleme, setProbleme] = useState("");
+  const [typeProduit, setTypeProduit] = useState("");
+  const [phaseAqueuse, setPhaseAqueuse] = useState("");
+  const [phaseGrasse, setPhaseGrasse] = useState("");
+  const [actif, setActif] = useState("");
+  const [conservateur, setConservateur] = useState("");
 
-  const handleIngredientChange = (ingredientNom) => {
-    if (ingredientsSelectionnes.includes(ingredientNom)) {
-      setIngredientsSelectionnes(
-        ingredientsSelectionnes.filter((item) => item !== ingredientNom)
-      );
-    } else {
-      setIngredientsSelectionnes([...ingredientsSelectionnes, ingredientNom]);
-    }
+  const [resultat, setResultat] = useState(null);
+  const [message, setMessage] = useState("");
+  const [sauvegardeMessage, setSauvegardeMessage] = useState("");
+
+  const options = {
+    aqueuse: ["Eau purifiée", "Hydrolat de rose", "Gel d’aloe vera"],
+    grasse: ["Huile de jojoba", "Huile d’amande douce", "Beurre de karité"],
+    actifs: [
+      "Acide salicylique",
+      "Niacinamide",
+      "Acide hyaluronique",
+      "Panthénol",
+    ],
+    conservateurs: ["Phénoxyéthanol", "Benzoate de sodium", "Aucun"],
   };
 
-  const calculerScore = () => {
-    let nouveauScore = 0;
-
-    if (probleme === "acne") {
-      if (ingredientsSelectionnes.includes("Acide salicylique")) nouveauScore += 5;
-      if (ingredientsSelectionnes.includes("Niacinamide")) nouveauScore += 5;
-      if (ingredientsSelectionnes.includes("Acide hyaluronique")) nouveauScore += 1;
-      if (ingredientsSelectionnes.includes("Glycérine")) nouveauScore += 1;
-    }
-
-    if (probleme === "seche") {
-      if (ingredientsSelectionnes.includes("Acide hyaluronique")) nouveauScore += 5;
-      if (ingredientsSelectionnes.includes("Glycérine")) nouveauScore += 5;
-      if (ingredientsSelectionnes.includes("Niacinamide")) nouveauScore += 1;
-      if (ingredientsSelectionnes.includes("Acide salicylique")) nouveauScore += 0;
-    }
-
-    if (ingredientsSelectionnes.includes("Parfum")) {
-      nouveauScore -= 1;
-    }
-
-    if (nouveauScore < 0) {
-      nouveauScore = 0;
-    }
-
-    return nouveauScore;
+  const resetJeu = () => {
+    setProbleme("");
+    setTypeProduit("");
+    setPhaseAqueuse("");
+    setPhaseGrasse("");
+    setActif("");
+    setConservateur("");
+    setResultat(null);
+    setMessage("");
+    setSauvegardeMessage("");
   };
 
   const handleValidation = async () => {
     setSauvegardeMessage("");
 
-    if (!probleme) {
-      setMessage("Veuillez choisir un problème de peau.");
-      setScore(null);
+    if (
+      !probleme ||
+      !typeProduit ||
+      !phaseAqueuse ||
+      !phaseGrasse ||
+      !actif ||
+      !conservateur
+    ) {
+      setMessage("Veuillez compléter toutes les étapes de formulation.");
+      setResultat(null);
       return;
     }
 
-    if (ingredientsSelectionnes.length === 0) {
-      setMessage("Veuillez sélectionner au moins un ingrédient.");
-      setScore(null);
-      return;
+    let scoreEfficacite = 0;
+    let scoreSecurite = 0;
+    let scoreEnvironnement = 0;
+
+    if (probleme === "acne") {
+      if (typeProduit === "gel" || typeProduit === "serum") {
+        scoreEfficacite += 3;
+      }
+      if (actif === "Acide salicylique" || actif === "Niacinamide") {
+        scoreEfficacite += 5;
+      }
+      if (phaseGrasse === "Huile de jojoba") {
+        scoreEfficacite += 1;
+      }
     }
 
-    const nouveauScore = calculerScore();
-    setScore(nouveauScore);
+    if (probleme === "seche") {
+      if (typeProduit === "creme" || typeProduit === "serum") {
+        scoreEfficacite += 3;
+      }
+      if (actif === "Acide hyaluronique" || actif === "Panthénol") {
+        scoreEfficacite += 5;
+      }
+      if (
+        phaseGrasse === "Huile d’amande douce" ||
+        phaseGrasse === "Beurre de karité"
+      ) {
+        scoreEfficacite += 1;
+      }
+    }
 
-    if (nouveauScore >= 8) {
-      setMessage("Très bon choix d’ingrédients.");
-    } else if (nouveauScore >= 5) {
-      setMessage("Choix correct, mais améliorable.");
+    if (probleme === "sensible") {
+      if (typeProduit === "creme" || typeProduit === "serum") {
+        scoreEfficacite += 3;
+      }
+      if (actif === "Panthénol" || actif === "Niacinamide") {
+        scoreEfficacite += 5;
+      }
+      if (phaseAqueuse === "Hydrolat de rose") {
+        scoreEfficacite += 1;
+      }
+    }
+
+    if (scoreEfficacite > 10) scoreEfficacite = 10;
+
+    scoreSecurite = 6;
+
+    if (conservateur !== "Aucun") {
+      scoreSecurite += 2;
     } else {
-      setMessage("Choix peu adapté au problème de peau.");
+      scoreSecurite -= 3;
     }
+
+    if (probleme === "sensible" && actif === "Acide salicylique") {
+      scoreSecurite -= 3;
+    }
+
+    if (probleme === "acne" && phaseGrasse === "Beurre de karité") {
+      scoreSecurite -= 1;
+    }
+
+    if (scoreSecurite < 0) scoreSecurite = 0;
+    if (scoreSecurite > 10) scoreSecurite = 10;
+
+    scoreEnvironnement = 5;
+
+    if (
+      phaseAqueuse === "Hydrolat de rose" ||
+      phaseAqueuse === "Gel d’aloe vera"
+    ) {
+      scoreEnvironnement += 2;
+    }
+
+    if (
+      phaseGrasse === "Huile de jojoba" ||
+      phaseGrasse === "Huile d’amande douce"
+    ) {
+      scoreEnvironnement += 2;
+    }
+
+    if (conservateur === "Benzoate de sodium") {
+      scoreEnvironnement += 1;
+    }
+
+    if (conservateur === "Phénoxyéthanol") {
+      scoreEnvironnement -= 1;
+    }
+
+    if (scoreEnvironnement < 0) scoreEnvironnement = 0;
+    if (scoreEnvironnement > 10) scoreEnvironnement = 10;
+
+    const scoreTotal = Math.round(
+      (scoreEfficacite + scoreSecurite + scoreEnvironnement) / 3
+    );
+
+    let commentaire = "";
+
+    if (scoreTotal >= 8) {
+      commentaire =
+        "Très bonne formulation : produit cohérent et bien construit.";
+    } else if (scoreTotal >= 5) {
+      commentaire =
+        "Formulation correcte, mais certains choix peuvent être améliorés.";
+    } else {
+      commentaire =
+        "Formulation peu adaptée : il faut revoir les choix du produit.";
+    }
+
+    const resultatCalcule = {
+      scoreEfficacite,
+      scoreSecurite,
+      scoreEnvironnement,
+      scoreTotal,
+      commentaire,
+    };
+
+    setMessage("");
+    setResultat(resultatCalcule);
 
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
       const token = localStorage.getItem("token");
-
-      console.log("API_URL =", API_URL);
-      console.log("user =", user);
-      console.log("token =", token);
-      console.log("url partie =", `${API_URL}/api/games/parties`);
-      console.log("url score =", `${API_URL}/api/games/scores`);
-
-      if (!user || !user.id) {
-        setSauvegardeMessage("Utilisateur non trouvé dans la session.");
-        return;
-      }
 
       if (!token) {
         setSauvegardeMessage("Token non trouvé. Veuillez vous reconnecter.");
         return;
       }
-
-      const partiePayload = {
-        id_utilisateur: Number(user.id),
-        id_mini_jeu: 1,
-      };
-
-      console.log("DATA ENVOYÉE PARTIE =", partiePayload);
 
       const partieRes = await fetch(`${API_URL}/api/games/parties`, {
         method: "POST",
@@ -115,11 +190,12 @@ function CreationProduit() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(partiePayload),
+        body: JSON.stringify({
+          id_mini_jeu: 1,
+        }),
       });
 
       const partieData = await partieRes.json();
-      console.log("REPONSE PARTIE =", partieData);
 
       if (!partieRes.ok) {
         setSauvegardeMessage(
@@ -136,25 +212,20 @@ function CreationProduit() {
         return;
       }
 
-      const scorePayload = {
-        valeur: Number(nouveauScore),
-        temps: 30,
-        id_partie: Number(idPartie),
-      };
-
-      console.log("DATA ENVOYÉE SCORE =", scorePayload);
-
       const scoreRes = await fetch(`${API_URL}/api/games/scores`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(scorePayload),
+        body: JSON.stringify({
+          valeur: Number(scoreTotal),
+          temps: 30,
+          id_partie: Number(idPartie),
+        }),
       });
 
       const scoreData = await scoreRes.json();
-      console.log("REPONSE SCORE =", scoreData);
 
       if (!scoreRes.ok) {
         setSauvegardeMessage(
@@ -166,84 +237,162 @@ function CreationProduit() {
 
       navigate("/resultat", {
         state: {
-            score: nouveauScore,
-            message: message,
-            },
-    });
-
+          score: scoreTotal,
+          message: commentaire,
+          details: resultatCalcule,
+        },
+      });
     } catch (error) {
       console.error("Erreur complète :", error);
       setSauvegardeMessage("Erreur serveur : " + error.message);
     }
   };
 
-  const resetJeu = () => {
-    setProbleme("");
-    setIngredientsSelectionnes([]);
-    setScore(null);
-    setMessage("");
-    setSauvegardeMessage("");
-  };
-
   return (
-    <div style={{ maxWidth: "700px", margin: "40px auto", textAlign: "center" }}>
-      <h1>Création d’un produit cosmétique</h1>
+    <div className="game-page">
+      <div className="game-container">
+        <h1 className="game-title">Création d’un produit cosmétique</h1>
 
-      <h3>1. Choisir un problème de peau</h3>
-      <select value={probleme} onChange={(e) => setProbleme(e.target.value)}>
-        <option value="">-- Choisir --</option>
-        <option value="acne">Acné</option>
-        <option value="seche">Peau sèche</option>
-      </select>
+        <div className="game-card">
+          <h3 className="game-section-title">1. Choisir un problème de peau</h3>
+          <select
+            className="game-select"
+            value={probleme}
+            onChange={(e) => setProbleme(e.target.value)}
+          >
+            <option value="">-- Choisir --</option>
+            <option value="acne">Acné</option>
+            <option value="seche">Peau sèche</option>
+            <option value="sensible">Peau sensible</option>
+          </select>
+        </div>
 
-      <h3 style={{ marginTop: "30px" }}>2. Sélectionner les ingrédients</h3>
+        <div className="game-card">
+          <h3 className="game-section-title">2. Choisir un type de produit</h3>
+          <select
+            className="game-select"
+            value={typeProduit}
+            onChange={(e) => setTypeProduit(e.target.value)}
+          >
+            <option value="">-- Choisir --</option>
+            <option value="gel">Gel</option>
+            <option value="creme">Crème</option>
+            <option value="serum">Sérum</option>
+          </select>
+        </div>
 
-      <div style={{ textAlign: "left", display: "inline-block" }}>
-        {ingredients.map((ingredient) => (
-          <div key={ingredient.id} style={{ marginBottom: "10px" }}>
-            <label>
-              <input
-                type="checkbox"
-                checked={ingredientsSelectionnes.includes(ingredient.nom)}
-                onChange={() => handleIngredientChange(ingredient.nom)}
-              />{" "}
-              {ingredient.nom}
-            </label>
+        <div className="game-card">
+          <h3 className="game-section-title">3. Construire la formule</h3>
+
+          <div style={{ display: "grid", gap: "14px" }}>
+            <div>
+              <label>Phase aqueuse</label>
+              <select
+                className="game-select"
+                value={phaseAqueuse}
+                onChange={(e) => setPhaseAqueuse(e.target.value)}
+              >
+                <option value="">-- Choisir --</option>
+                {options.aqueuse.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label>Phase grasse</label>
+              <select
+                className="game-select"
+                value={phaseGrasse}
+                onChange={(e) => setPhaseGrasse(e.target.value)}
+              >
+                <option value="">-- Choisir --</option>
+                {options.grasse.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label>Actif principal</label>
+              <select
+                className="game-select"
+                value={actif}
+                onChange={(e) => setActif(e.target.value)}
+              >
+                <option value="">-- Choisir --</option>
+                {options.actifs.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label>Conservateur</label>
+              <select
+                className="game-select"
+                value={conservateur}
+                onChange={(e) => setConservateur(e.target.value)}
+              >
+                <option value="">-- Choisir --</option>
+                {options.conservateurs.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        ))}
+        </div>
+
+        <div className="game-card">
+          <div className="game-buttons">
+            <button className="game-btn primary" onClick={handleValidation}>
+              Valider la formulation
+            </button>
+
+            <button className="game-btn secondary" onClick={resetJeu}>
+              Réinitialiser
+            </button>
+          </div>
+        </div>
+
+        {message && (
+          <div className="game-card game-result">
+            <p className="game-message">{message}</p>
+          </div>
+        )}
+
+        {resultat && (
+          <div className="game-card game-result">
+            <p className="game-score">
+              Score total : {resultat.scoreTotal} / 10
+            </p>
+            <p className="game-message">
+              <strong>Efficacité :</strong> {resultat.scoreEfficacite} / 10
+            </p>
+            <p className="game-message">
+              <strong>Sécurité :</strong> {resultat.scoreSecurite} / 10
+            </p>
+            <p className="game-message">
+              <strong>Environnement :</strong> {resultat.scoreEnvironnement} / 10
+            </p>
+            <p className="game-message">{resultat.commentaire}</p>
+          </div>
+        )}
+
+        {sauvegardeMessage && (
+          <div className="game-card game-result">
+            <p className="game-message">{sauvegardeMessage}</p>
+          </div>
+        )}
       </div>
-
-      <div style={{ marginTop: "25px" }}>
-        <button onClick={handleValidation} style={{ marginRight: "10px" }}>
-          Valider
-        </button>
-
-        <button onClick={resetJeu}>Réinitialiser</button>
-      </div>
-
-      {message && (
-        <div style={{ marginTop: "30px" }}>
-          <p>
-            <strong>Résultat :</strong> {message}
-          </p>
-        </div>
-      )}
-
-      {score !== null && (
-        <div style={{ marginTop: "10px" }}>
-          <p>
-            <strong>Score :</strong> {score} / 10
-          </p>
-        </div>
-      )}
-
-      {sauvegardeMessage && (
-        <div style={{ marginTop: "10px" }}>
-          <p>
-            <strong>Sauvegarde :</strong> {sauvegardeMessage}
-          </p>
-        </div>
-      )}
     </div>
   );
 }

@@ -166,7 +166,58 @@ Pages principales actuellement disponibles :
 
 Pour lancer le frontend :
 
-```bash
 cd frontend
 npm install
 npm start
+
+
+
+## Backend
+
+Le backend a été développé avec **Node.js**, **Express.js** et **PostgreSQL**.
+
+Fonctionnalités backend réalisées :
+- connexion à la base de données PostgreSQL
+- création des routes API
+- authentification avec JWT
+- protection des routes privées
+- création et enregistrement des parties
+- enregistrement des scores en base de données
+- récupération des mini-jeux depuis la base
+
+Pour lancer le backend :
+cd cosmetic-lab-backend
+npm install
+node server.js
+
+Backend accessible sur :
+
+http://localhost:5000
+Fonctionnalités réalisées
+Authentification
+inscription utilisateur
+connexion utilisateur
+génération du token JWT
+stockage du token côté frontend
+accès protégé aux pages privées
+Interface utilisateur
+page d’accueil
+page de connexion
+page d’inscription
+dashboard des mini-jeux
+navigation entre les pages
+déconnexion utilisateur
+Mini-jeux
+mini-jeu 1 : création d’un produit cosmétique
+mini-jeu 2 : association des ingrédients
+mini-jeu 3 : stabilité et contrôle qualité (en cours / à finaliser si nécessaire)
+Gestion des résultats
+calcul du score
+affichage de la page résultat
+bouton rejouer
+retour au dashboard
+enregistrement des résultats dans la base
+Base de données
+création des tables principales
+relations entre utilisateurs, parties, mini-jeux et scores
+insertion des données nécessaires au fonctionnement de l’application
