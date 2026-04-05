@@ -5,11 +5,16 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Accueil from "./pages/accueil";
 import About from "./pages/About";
-import CreationProduit from "./pages/CreationProduit";
 import Resultat from "./pages/Resultat";
 import MiniJeu2 from "./pages/MiniJeu2";
 import MiniJeu3 from "./pages/MiniJeu3";
 import ProtectedRoute from "./components/ProtectedRoute";
+
+import CreationProduitPage from "./pages/CreationProduit/CreationProduitPage";
+import ProblemePeau from "./pages/CreationProduit/ProblemePeau";
+import TypeProduit from "./pages/CreationProduit/TypeProduit";
+import FormuleProduit from "./pages/CreationProduit/FormuleProduit";
+import ResultatCreationProduit from "./pages/CreationProduit/ResultatCreationProduit";
 
 function App() {
   return (
@@ -33,10 +38,16 @@ function App() {
           path="/creation-produit"
           element={
             <ProtectedRoute>
-              <CreationProduit />
+              <CreationProduitPage />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<Navigate to="probleme" replace />} />
+          <Route path="probleme" element={<ProblemePeau />} />
+          <Route path="type-produit" element={<TypeProduit />} />
+          <Route path="formule" element={<FormuleProduit />} />
+          <Route path="resultat" element={<ResultatCreationProduit />} />
+        </Route>
 
         <Route
           path="/resultat"
