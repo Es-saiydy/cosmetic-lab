@@ -52,7 +52,7 @@ function Register() {
   return (
     <div className="auth-page">
       <div className="auth-topbar">
-        <button className="auth-back" onClick={() => navigate(-1)}>
+        <button className="auth-back" onClick={() => navigate("/login")}>
           ← Retour
         </button>
       </div>

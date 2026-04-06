@@ -45,7 +45,7 @@ function Login() {
   return (
     <div className="auth-page">
       <div className="auth-topbar">
-        <button className="auth-back" onClick={() => navigate(-1)}>
+        <button className="auth-back" onClick={() => navigate("/")}>
           ← Retour
         </button>
       </div>
@@ -104,7 +104,7 @@ function Login() {
         {message && <p className="auth-message">{message}</p>}
 
         <div className="auth-footer-link">
-          <Link to="/register">Mot de passe oublié ?</Link>
+          <Link to="/register">Inscription</Link>
         </div>
       </div>
 

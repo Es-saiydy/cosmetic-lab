@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import "../../styles/creationProduit.css";
+import { useNavigate } from "react-router-dom";
 
 function CreationProduitPage() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     probleme: "",
     typeProduit: "",
@@ -42,8 +45,15 @@ function CreationProduitPage() {
   const currentStep = getStep();
 
   return (
+
     <div className="game-page">
       <div className="game-container">
+        <button
+            className="back-button"
+            onClick={() => navigate("/dashboard")}
+        >
+            ← Retour au dashboard
+        </button>
         <h1 className="game-title">Création d’un produit cosmétique</h1>
         <p className="game-subtitle">
           Avance étape par étape pour formuler un produit adapté.

@@ -84,6 +84,20 @@
   box-shadow: 0 0 0 3px rgba(47, 111, 179, 0.08);
 }
 
+.back-button {
+  background: transparent;
+  border: none;
+  color: #2f6fb3;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.back-button:hover {
+  text-decoration: underline;
+}
+
 .formula-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
