@@ -9,7 +9,7 @@ import Resultat from "./pages/Resultat";
 import MiniJeu2 from "./pages/MiniJeu2";
 import MiniJeu3 from "./pages/MiniJeu3";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import AdminPage from "./pages/AdminPage";
 import CreationProduitPage from "./pages/CreationProduit/CreationProduitPage";
 import ProblemePeau from "./pages/CreationProduit/ProblemePeau";
 import TypeProduit from "./pages/CreationProduit/TypeProduit";
@@ -74,6 +74,15 @@ function App() {
               <MiniJeu3 />
             </ProtectedRoute>
           }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPage />
+            </ProtectedRoute>
+            }
         />
 
         <Route path="*" element={<Navigate to="/" replace />} />

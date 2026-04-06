@@ -176,5 +176,25 @@
 
 .dashboard-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.dashboard-admin {
+  border: none;
+  background:#2f6fb3;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dashboard-admin:hover {
+  opacity: 0.9;
 }

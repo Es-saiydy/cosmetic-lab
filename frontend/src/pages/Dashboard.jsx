@@ -59,10 +59,16 @@ function Dashboard() {
             <span className="dashboard-brand-text">Cosmetic Lab</span>
           </div>
 
-          <button className="dashboard-logout" onClick={handleLogout}>
-            Se déconnecter
-          </button>
-        </div>
+          <div className="dashboard-actions">
+            <button className="dashboard-admin" onClick={() => navigate("/admin")}>
+              Administration
+            </button>
+
+    <button className="dashboard-logout" onClick={handleLogout}>
+      Se déconnecter
+    </button>
+  </div>
+</div>
 
         <div className="dashboard-hero">
           <h1>
