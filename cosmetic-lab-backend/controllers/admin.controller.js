@@ -52,12 +52,9 @@ const getAllScores = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   const { id } = req.params;
-  const client = await db.connect();
 
   try {
-    await client.query("BEGIN");
-
-    await client.query(
+    await db.query(
       `
       DELETE FROM score
       WHERE id_partie IN (
@@ -69,7 +66,7 @@ const deleteUser = async (req, res) => {
       [id]
     );
 
-    await client.query(
+    await db.query(
       `
       DELETE FROM partie
       WHERE id_utilisateur = $1
@@ -77,7 +74,7 @@ const deleteUser = async (req, res) => {
       [id]
     );
 
-    const result = await client.query(
+    const result = await db.query(
       `
       DELETE FROM utilisateur
       WHERE id_utilisateur = $1
@@ -86,20 +83,14 @@ const deleteUser = async (req, res) => {
       [id]
     );
 
-    await client.query("COMMIT");
-
     if (result.rowCount === 0) {
       return res.status(404).json({ message: "Utilisateur introuvable" });
     }
 
     res.json({ message: "Utilisateur supprimé avec succès" });
   } catch (error) {
-    await client.query("ROLLBACK");
     console.error("Erreur deleteUser :", error);
     res.status(500).json({ error: error.message });
-  } finally {
-    client.release();
   }
 };
-
 module.exports = { getAllUsers, getAllScores, deleteUser };

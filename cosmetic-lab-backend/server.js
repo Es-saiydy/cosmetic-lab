@@ -31,6 +31,7 @@ app.get('/api/test-db', async (req, res) => {
 
 app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/games', require('./routes/game.routes'));
+app.use("/api/admin/auth", require("./routes/adminAuth.routes"));
 app.use('/api/admin', require('./routes/admin.routes'));
 
 const PORT = process.env.PORT || 5000;

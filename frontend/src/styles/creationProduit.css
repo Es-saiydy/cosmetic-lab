@@ -516,3 +516,18 @@
     grid-template-columns: 1fr;
   }
 }
+
+.game-timer {
+  background: #eef4fb;
+  color: #2f6fb3;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.game-timer.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}

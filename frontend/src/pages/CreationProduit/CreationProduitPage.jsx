@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../../styles/creationProduit.css";
-import { useNavigate } from "react-router-dom";
 
 function CreationProduitPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [formData, setFormData] = useState({
     probleme: "",
@@ -15,7 +15,21 @@ function CreationProduitPage() {
     conservateur: "",
   });
 
-  const location = useLocation();
+  const [timeLeft, setTimeLeft] = useState(300);
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      alert("Temps écoulé !");
+      navigate("/creation-produit/resultat");
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, navigate]);
 
   const updateField = (field, value) => {
     setFormData((prev) => ({
@@ -33,6 +47,7 @@ function CreationProduitPage() {
       actif: "",
       conservateur: "",
     });
+    setTimeLeft(300);
   };
 
   const getStep = () => {
@@ -42,18 +57,28 @@ function CreationProduitPage() {
     return 3;
   };
 
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
   const currentStep = getStep();
 
   return (
-
     <div className="game-page">
       <div className="game-container">
         <button
-            className="back-button"
-            onClick={() => navigate("/dashboard")}
+          className="back-button"
+          onClick={() => navigate("/dashboard")}
         >
-            ← Retour au dashboard
+          ← Retour au dashboard
         </button>
+
+        <div className={`game-timer ${timeLeft < 60 ? "danger" : ""}`}>
+          ⏱️ Temps restant : {formatTime(timeLeft)}
+        </div>
+
         <h1 className="game-title">Création d’un produit cosmétique</h1>
         <p className="game-subtitle">
           Avance étape par étape pour formuler un produit adapté.
@@ -71,7 +96,7 @@ function CreationProduitPage() {
           </div>
         </div>
 
-        <Outlet context={{ formData, updateField, resetJeu }} />
+        <Outlet context={{ formData, updateField, resetJeu, timeLeft }} />
       </div>
     </div>
   );

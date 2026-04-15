@@ -15,6 +15,8 @@ import ProblemePeau from "./pages/CreationProduit/ProblemePeau";
 import TypeProduit from "./pages/CreationProduit/TypeProduit";
 import FormuleProduit from "./pages/CreationProduit/FormuleProduit";
 import ResultatCreationProduit from "./pages/CreationProduit/ResultatCreationProduit";
+import AdminRoute from "./components/AdminRoute";
+import AdminLogin from "./pages/AdminLogin";
 
 function App() {
   return (
@@ -80,11 +82,13 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoute>
-              <AdminPage />
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
             </ProtectedRoute>
-            }
+          }
         />
-
+        <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

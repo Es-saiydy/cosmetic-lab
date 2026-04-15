@@ -60,15 +60,17 @@ function Dashboard() {
           </div>
 
           <div className="dashboard-actions">
-            <button className="dashboard-admin" onClick={() => navigate("/admin")}>
-              Administration
-            </button>
+            {user?.isAdmin && (
+              <button className="dashboard-admin" onClick={() => navigate("/admin")}>
+                Administration
+              </button>
+            )}
 
-    <button className="dashboard-logout" onClick={handleLogout}>
-      Se déconnecter
-    </button>
-  </div>
-</div>
+            <button className="dashboard-logout" onClick={handleLogout}>
+              Se déconnecter
+            </button>
+          </div>
+        </div>  
 
         <div className="dashboard-hero">
           <h1>

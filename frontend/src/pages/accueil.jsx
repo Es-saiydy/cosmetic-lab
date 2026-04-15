@@ -23,6 +23,13 @@ function Accueil() {
             À PROPOS
           </button>
         </div>
+
+        <button
+          className="admin-access-btn"
+          onClick={() => navigate("/admin-login")}
+        >
+          🔐 Accès Admin
+        </button>
       </div>
 
       <div className="home-bottom-text">Projet pédagogique — L3 MIAGE</div>
