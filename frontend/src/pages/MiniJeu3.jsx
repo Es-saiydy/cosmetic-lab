@@ -44,24 +44,55 @@ function MiniJeu3() {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  const handleFinish = useCallback(async (finalScore) => {
-    if (token) {
-      try {
-        const res = await fetch(`${API_URL}/api/games/parties`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-          body: JSON.stringify({ id_mini_jeu: 3 })
-        });
-        const data = await res.json();
-        await fetch(`${API_URL}/api/games/scores`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-          body: JSON.stringify({ id_partie: data.id_partie, score_total: finalScore })
-        });
-      } catch (e) { console.error(e); }
+ const handleFinish = useCallback(async (finalScore) => {
+  const tempsPasse = 600 - globalTimeLeft;
+
+  if (token) {
+    try {
+      const res = await fetch(`${API_URL}/api/games/parties`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id_mini_jeu: 3 }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Erreur création partie");
+      }
+
+      const data = await res.json();
+
+      const scoreRes = await fetch(`${API_URL}/api/games/scores`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          valeur: finalScore,
+          temps: tempsPasse,
+          id_partie: data.id_partie,
+        }),
+      });
+
+      if (!scoreRes.ok) {
+        console.error("Erreur enregistrement score");
+      }
+    } catch (e) {
+      console.error("Erreur sauvegarde:", e);
     }
-    navigate("/resultat", { state: { score: finalScore, total: products.length } });
-  }, [token, navigate, products.length]);
+  }
+
+  navigate("/resultat", {
+    state: {
+      score: finalScore,
+      total: products.length,
+      replayPath: "/mini-jeu-3",
+    },
+  });
+}, [token, navigate, products.length, globalTimeLeft]);
 
   const generateGrid = useCallback(() => {
     const size = 10;
@@ -78,18 +109,23 @@ function MiniJeu3() {
   }, [currentProduct]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setGlobalTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleFinish(score);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [handleFinish, score]);
+  const timer = setInterval(() => {
+    setGlobalTimeLeft((prev) => {
+      if (prev <= 1) {
+        clearInterval(timer);
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+  return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+  if (globalTimeLeft === 0) {
+    handleFinish(score);
+  }
+}, [globalTimeLeft, handleFinish, score]);
 
   useEffect(() => {
     if (step === 2) {
@@ -153,14 +189,6 @@ function MiniJeu3() {
       <button onClick={() => handleFinish(score)} style={styles.quitBtn}>Quitter</button>
     </div>
   );
-
-  navigate("/resultat", {
-    state: {
-      score: score,
-      total: totalQuestions,
-      replayPath: "/mini-jeu-3"
-    }
-  });
 
   if (step === 1) {
     return (

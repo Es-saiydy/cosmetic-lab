@@ -121,6 +121,9 @@ function ResultatCreationProduit() {
           valeur: scoreTotal,
           temps: 0,
           id_partie,
+          score_efficacite: scoreEfficacite,
+          score_securite: scoreSecurite,
+          score_environnement: scoreEnvironnement,
         }),
       });
 

@@ -107,43 +107,73 @@ function MiniJeu2() {
     }, 2600);
   };
 
-  const saveToDatabase = useCallback(async () => {
-    if (!token) {
-      navigate("/resultat", { state: { score, total: ingredients.length } });
-      return;
+const saveToDatabase = useCallback(async () => {
+  if (!token) {
+    navigate("/resultat", {
+      state: {
+        score,
+        total: ingredients.length,
+        nextGame: "/mini-jeu-3",
+        replayPath: "/mini-jeu-2",
+      },
+    });
+    return;
+  }
+
+  try {
+    const partieRes = await fetch(`${API_URL}/api/games/parties`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ id_mini_jeu: 2 }),
+    });
+
+    if (!partieRes.ok) {
+      throw new Error("Erreur création partie");
     }
 
-    try {
-      const partieRes = await fetch(`${API_URL}/api/games/parties`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({ id_mini_jeu: 2 })
-      });
+    const partieData = await partieRes.json();
+    const id_partie = partieData.id_partie;
 
-      const partieData = await partieRes.json();
-      const id_partie = partieData.id_partie;
+    const scoreRes = await fetch(`${API_URL}/api/games/scores`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        valeur: score,
+        temps: time,
+        id_partie,
+      }),
+    });
 
-      await fetch(`${API_URL}/api/games/scores`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({ id_partie, score_total: score })
-      });
-
-      navigate("/resultat", { state: { score, total: ingredients.length } });
-    } catch (error) {
-      console.error(error);
-      navigate("/resultat", { state: { score, total: ingredients.length } });
-
-      navigate("/resultat", {
-        state: {
-          score: score,
-          total: ingredients.length,
-          nextGame: "/mini-jeu-3",
-          replayPath: "/mini-jeu-2"
-        }
-      });
+    if (!scoreRes.ok) {
+      console.error("Erreur enregistrement score");
     }
-  }, [token, score, navigate]);
+
+    navigate("/resultat", {
+      state: {
+        score,
+        total: ingredients.length,
+        nextGame: "/mini-jeu-3",
+        replayPath: "/mini-jeu-2",
+      },
+    });
+  } catch (error) {
+    console.error("Erreur sauvegarde:", error);
+    navigate("/resultat", {
+      state: {
+        score,
+        total: ingredients.length,
+        nextGame: "/mini-jeu-3",
+        replayPath: "/mini-jeu-2",
+      },
+    });
+  }
+}, [token, score, time, navigate]);
 
   const handleQuitter = () => {
     setIsRunning(false);
