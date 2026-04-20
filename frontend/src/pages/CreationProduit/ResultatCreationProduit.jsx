@@ -1,4 +1,6 @@
+import { useEffect, useRef } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import API_URL from "../../api";
 import {
   FaFlask,
   FaShieldAlt,
@@ -12,6 +14,7 @@ import { FaPumpSoap, FaJar, FaBottleDroplet } from "react-icons/fa6";
 function ResultatCreationProduit() {
   const navigate = useNavigate();
   const { formData, resetJeu } = useOutletContext();
+  const hasSaved = useRef(false);
 
   const {
     probleme,
@@ -81,6 +84,56 @@ function ResultatCreationProduit() {
   const scoreTotal = Math.round(
     (scoreEfficacite + scoreSecurite + scoreEnvironnement) / 3
   );
+
+  useEffect(() => {
+  if (hasSaved.current) return;
+  hasSaved.current = true;
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  const saveToDatabase = async () => {
+    try {
+      const partieRes = await fetch(`${API_URL}/api/games/parties`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id_mini_jeu: 1 }),
+      });
+
+      if (!partieRes.ok) {
+        console.error("Erreur création partie");
+        return;
+      }
+
+      const partieData = await partieRes.json();
+      const id_partie = partieData.id_partie;
+
+      const scoreRes = await fetch(`${API_URL}/api/games/scores`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          valeur: scoreTotal,
+          temps: 0,
+          id_partie,
+        }),
+      });
+
+      if (!scoreRes.ok) {
+        console.error("Erreur enregistrement score");
+      }
+    } catch (error) {
+      console.error("Erreur sauvegarde:", error);
+    }
+  };
+
+  saveToDatabase();
+}, [scoreTotal]);
 
   let commentaire = "";
 
@@ -181,6 +234,23 @@ function ResultatCreationProduit() {
 
           <button
             className="game-btn primary"
+            onClick={() =>
+              navigate("/resultat", {
+                state: {
+                  score: scoreTotal,
+                  total: 10,
+                  nextGame: "/mini-jeu-2",
+                  replayPath: "/creation-produit/probleme",
+                  message: commentaire,
+                },
+              })
+            }
+          >
+            Continuer
+          </button>
+
+          <button
+            className="game-btn ghost"
             onClick={() => {
               resetJeu();
               navigate("/creation-produit/probleme");

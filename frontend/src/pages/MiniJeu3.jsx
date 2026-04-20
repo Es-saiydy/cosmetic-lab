@@ -12,6 +12,7 @@ function MiniJeu3() {
   const [foundWords, setFoundWords] = useState([]);
   const [feedback, setFeedback] = useState(null);
   const [score, setScore] = useState(0);
+  const totalQuestions = 10;
 
   const [globalTimeLeft, setGlobalTimeLeft] = useState(600);
 
@@ -46,13 +47,13 @@ function MiniJeu3() {
   const handleFinish = useCallback(async (finalScore) => {
     if (token) {
       try {
-        const res = await fetch(`${API_URL}/api/games/partie`, {
+        const res = await fetch(`${API_URL}/api/games/parties`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
           body: JSON.stringify({ id_mini_jeu: 3 })
         });
         const data = await res.json();
-        await fetch(`${API_URL}/api/games/score`, {
+        await fetch(`${API_URL}/api/games/scores`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
           body: JSON.stringify({ id_partie: data.id_partie, score_total: finalScore })
@@ -153,6 +154,14 @@ function MiniJeu3() {
     </div>
   );
 
+  navigate("/resultat", {
+    state: {
+      score: score,
+      total: totalQuestions,
+      replayPath: "/mini-jeu-3"
+    }
+  });
+
   if (step === 1) {
     return (
       <div style={styles.page}>
@@ -181,7 +190,10 @@ function MiniJeu3() {
         </div>
       </div>
     );
+    
   }
+
+
   return (
     <div style={styles.page}>
       <NavHeader />
@@ -266,5 +278,6 @@ const styles = {
   quitBtn: { background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontWeight: "bold" },
   toast: { position: "absolute", top: "10px", right: "10px", padding: "8px 20px", background: "#10b981", color: "white", borderRadius: "10px", fontWeight: "bold" }
 };
+
 
 export default MiniJeu3;

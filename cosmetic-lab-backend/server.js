@@ -33,6 +33,7 @@ app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/games', require('./routes/game.routes'));
 app.use("/api/admin/auth", require("./routes/adminAuth.routes"));
 app.use('/api/admin', require('./routes/admin.routes'));
+app.use('/api/leaderboard', require('./routes/leaderboard.routes'));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Serveur démarré sur http://localhost:${PORT}`));

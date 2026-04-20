@@ -1,5 +1,5 @@
 const db = require("../config/db");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.loginAdmin = async (req, res) => {
@@ -17,7 +17,7 @@ exports.loginAdmin = async (req, res) => {
 
     const admin = result.rows[0];
 
-    const validPassword = mot_de_passe === admin.mot_de_passe;
+    const validPassword = await bcrypt.compare(mot_de_passe, admin.mot_de_passe);
 
     if (!validPassword) {
       return res.status(401).json({ message: "Mot de passe incorrect" });

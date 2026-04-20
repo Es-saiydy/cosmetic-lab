@@ -114,7 +114,7 @@ function MiniJeu2() {
     }
 
     try {
-      const partieRes = await fetch(`${API_URL}/api/games/partie`, {
+      const partieRes = await fetch(`${API_URL}/api/games/parties`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({ id_mini_jeu: 2 })
@@ -123,7 +123,7 @@ function MiniJeu2() {
       const partieData = await partieRes.json();
       const id_partie = partieData.id_partie;
 
-      await fetch(`${API_URL}/api/games/score`, {
+      await fetch(`${API_URL}/api/games/scores`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({ id_partie, score_total: score })
@@ -133,6 +133,15 @@ function MiniJeu2() {
     } catch (error) {
       console.error(error);
       navigate("/resultat", { state: { score, total: ingredients.length } });
+
+      navigate("/resultat", {
+        state: {
+          score: score,
+          total: ingredients.length,
+          nextGame: "/mini-jeu-3",
+          replayPath: "/mini-jeu-2"
+        }
+      });
     }
   }, [token, score, navigate]);
 

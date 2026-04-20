@@ -17,6 +17,7 @@ import FormuleProduit from "./pages/CreationProduit/FormuleProduit";
 import ResultatCreationProduit from "./pages/CreationProduit/ResultatCreationProduit";
 import AdminRoute from "./components/AdminRoute";
 import AdminLogin from "./pages/AdminLogin";
+import LeaderboardPage from "./pages/LeaderboardPage";
 
 function App() {
   return (
@@ -89,7 +90,18 @@ function App() {
           }
         />
         <Route path="/admin-login" element={<AdminLogin />} />
+
+        <Route
+          path="/leaderboard"
+          element={
+        <ProtectedRoute>
+          <LeaderboardPage />
+        </ProtectedRoute>
+          }
+        />
+
         <Route path="*" element={<Navigate to="/" replace />} />
+
       </Routes>
     </Router>
   );
