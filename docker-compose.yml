@@ -1,0 +1,86 @@
+# docker-compose : orchestre plusieurs containers ensemble
+# (backend + base de données) sur un même réseau privé.
+
+services:
+
+  # ─────────────────────────────
+  # Service 1 : Base de données PostgreSQL
+  # ─────────────────────────────
+  db:
+    # Image officielle Postgres, version 16, sur Alpine (légère)
+    image: postgres:16-alpine
+    container_name: cosmetic_lab_db
+
+    # Variables d'environnement lues par l'image postgres
+    # au tout premier démarrage pour créer le user, le mot de passe et la base.
+    environment:
+      POSTGRES_USER: cosmetic
+      POSTGRES_PASSWORD: cosmetic
+      POSTGRES_DB: cosmetic_lab
+
+    # Mapping de port : "host:container".
+    # On expose le port 5432 du container sur le 5432 de la machine,
+    # pour pouvoir s'y connecter avec un client Postgres en local (DBeaver, psql...).
+    ports:
+      - "5433:5432"
+
+    volumes:
+      # Volume nommé : persiste les données entre redémarrages
+      # (sinon perdues à chaque docker compose down).
+      - cosmetic_db_data:/var/lib/postgresql/data
+
+      # Le schema.sql est monté dans le dossier d'init de l'image postgres.
+      # Au TOUT PREMIER démarrage (volume vide), tous les .sql de ce dossier
+      # sont exécutés automatiquement en ordre alphabétique.
+      # CREATE TABLE + INSERT seed data → tout est prêt sans intervention.
+      - ./cosmetic-lab-backend/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+
+    # Healthcheck : Docker vérifie périodiquement que Postgres répond.
+    # Le service backend attendra ce statut "healthy" avant de démarrer.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cosmetic -d cosmetic_lab"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────
+  # Service 2 : Backend Node.js
+  # ─────────────────────────────
+  backend:
+    # On construit l'image à partir du Dockerfile présent dans ce dossier
+    build: ./cosmetic-lab-backend
+    container_name: cosmetic_lab_backend
+
+    # Variables d'environnement injectées dans le container.
+    # Elles remplacent celles d'un éventuel fichier .env (qui n'est plus copié,
+    # cf. .dockerignore).
+    environment:
+      PORT: 5001
+
+      # ATTENTION : DB_HOST = "db", PAS "localhost".
+      # "db" = nom du service ci-dessus, résolu par le DNS interne de Docker.
+      # "localhost" pointerait vers le container backend lui-même (vide).
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: cosmetic
+      DB_PASSWORD: cosmetic
+      DB_NAME: cosmetic_lab
+
+      # En production, ce secret doit être lu depuis un coffre-fort
+      # (Docker secrets, Vault, etc.). Ici c'est en clair pour la démo.
+      JWT_SECRET: change_me_with_a_long_random_string
+
+    ports:
+      - "5001:5001"
+
+    # On attend que la DB soit "healthy" (pas juste démarrée) avant de lancer le backend.
+    # Sans condition: service_healthy, le backend démarrerait avant Postgres
+    # et planterait sur la première requête.
+    depends_on:
+      db:
+        condition: service_healthy
+
+# Volume nommé déclaré ici, géré par Docker
+# (stocké hors du dossier projet, propre).
+volumes:
+  cosmetic_db_data:

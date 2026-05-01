@@ -5,8 +5,7 @@ import "../styles/auth.css";
 import { FiMail, FiLock, FiUser } from "react-icons/fi";
 
 function Register() {
-  const [nom, setNom] = useState("");
-  const [prenom, setPrenom] = useState("");
+  const [nomComplet, setNomComplet] = useState("");
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [confirmation, setConfirmation] = useState("");
@@ -20,6 +19,16 @@ function Register() {
 
     if (motDePasse !== confirmation) {
       setMessage("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    const trimmed = nomComplet.trim();
+    const parts = trimmed.split(/\s+/);
+    const prenom = parts[0] || "";
+    const nom = parts.slice(1).join(" ") || "";
+
+    if (!prenom) {
+      setMessage("Veuillez saisir au moins un prénom.");
       return;
     }
 
@@ -73,16 +82,11 @@ function Register() {
           <input
             className="auth-input"
             type="text"
-            placeholder="Nom prénom"
-            value={`${prenom}${prenom && nom ? " " : ""}${nom}`}
-            onChange={(e) => {
-                const value = e.target.value.trimStart();
-                const parts = value.split(" ");
-                setPrenom(parts[0] || "");
-                setNom(parts.slice(1).join(" ") || "");
-            }}
+            placeholder="Prénom Nom"
+            value={nomComplet}
+            onChange={(e) => setNomComplet(e.target.value)}
             required
-        />
+          />
       </div>
 
           <div className="auth-input-wrapper">

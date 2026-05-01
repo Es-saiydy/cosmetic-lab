@@ -1,0 +1,15 @@
+# On n'envoie pas node_modules dans le container : ils seront réinstallés
+# par RUN npm install (versions cohérentes avec l'OS du container)
+node_modules
+
+# On n'envoie pas le .env local : les variables sont injectées par docker-compose
+.env
+
+# Fichiers inutiles dans le container
+npm-debug.log
+.git
+.gitignore
+.DS_Store
+Dockerfile
+.dockerignore
+README.md
