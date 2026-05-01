@@ -117,10 +117,10 @@ const totals = useMemo(() => {
                 userResults.map((result, index) => (
                   <tr key={index}>
                     <td>{result.mini_jeu}</td>
-                    <td>{result.score_total}</td>
-                    <td>{result.score_efficacite ?? "-"}</td>
-                    <td>{result.score_securite ?? "-"}</td>
-                    <td>{result.score_environnement ?? "-"}</td>
+                    <td>{result.score_total} / 100</td>
+                    <td>{result.score_efficacite != null ? `${result.score_efficacite} / 100` : "-"}</td>
+                    <td>{result.score_securite != null ? `${result.score_securite} / 100` : "-"}</td>
+                    <td>{result.score_environnement != null ? `${result.score_environnement} / 100` : "-"}</td>
                     <td>{result.temps_effectue_s ?? 0}s</td>
                   </tr>
                 ))
@@ -151,7 +151,7 @@ const totals = useMemo(() => {
                   <tr key={player.id_utilisateur}>
                     <td>{index + 1}</td>
                     <td>{player.prenom} {player.nom}</td>
-                    <td>{player.best_score}</td>
+                    <td>{player.best_score} / 100</td>
                     <td>{player.best_time}s</td>
                     <td>{player.nb_parties}</td>
                   </tr>

@@ -55,12 +55,12 @@ Nom de la base : cosmetic_lab
 - mini_jeu
 - partie
 - score
-- produit
+- probleme_peau
 - ingredient
 - famille_ingredient
-- composition
 - defaut_qualite
 - correction
+- defaut_a_pour_correction
 
 ##  Configuration (.env)
 
@@ -72,7 +72,7 @@ Créer un fichier `.env` dans le dossier backend :
 
 ### 1. Cloner le projet
 
-git clone https://github.com/ton-username/cosmetic-lab.git
+git clone https://github.com/Es-saiydy/cosmetic-lab.git
 cd cosmetic-lab
 
 ## Installer les dépendances
@@ -134,10 +134,14 @@ L’application permet actuellement de :
 - accéder à une page d’accueil
 - consulter le dashboard des mini-jeux
 - jouer au mini-jeu: Création d’un produit cosmétique
+- jouer au mini-jeu: Association des ingrédients
+- jouer au mini-jeu: Contrôle qualité
 - sélectionner un problème de peau et des ingrédients
 - calculer un score à la fin du mini-jeu
 - enregistrer la partie et le score dans la base de données
 - afficher une page de résultat
+- consulter le classement personnel et le classement global
+- accéder à un espace administrateur avec statistiques et graphiques
 
 ## Structure du projet
 
@@ -163,6 +167,9 @@ Pages principales actuellement disponibles :
 - Dashboard
 - CréationProduit
 - Résultat
+- Leaderboard
+- AdminLogin
+- AdminPage
 
 Pour lancer le frontend :
 
@@ -184,6 +191,11 @@ Fonctionnalités backend réalisées :
 - création et enregistrement des parties
 - enregistrement des scores en base de données
 - récupération des mini-jeux depuis la base
+- récupération des données métier depuis la base (ingrédients, familles, problèmes de peau, défauts qualité)
+- routes d’administration avec restriction par middleware
+- routes statistiques avec agrégation SQL (COUNT, AVG, GROUP BY)
+- suppression utilisateur transactionnelle (BEGIN / COMMIT / ROLLBACK)
+- validation des données à l’inscription (format email, longueur mot de passe)
 
 Pour lancer le backend :
 cd cosmetic-lab-backend
@@ -193,31 +205,3 @@ node server.js
 Backend accessible sur :
 
 http://localhost:5001
-Fonctionnalités réalisées
-Authentification
-inscription utilisateur
-connexion utilisateur
-génération du token JWT
-stockage du token côté frontend
-accès protégé aux pages privées
-Interface utilisateur
-page d’accueil
-page de connexion
-page d’inscription
-dashboard des mini-jeux
-navigation entre les pages
-déconnexion utilisateur
-Mini-jeux
-mini-jeu 1 : création d’un produit cosmétique
-mini-jeu 2 : association des ingrédients
-mini-jeu 3 : stabilité et contrôle qualité (en cours / à finaliser si nécessaire)
-Gestion des résultats
-calcul du score
-affichage de la page résultat
-bouton rejouer
-retour au dashboard
-enregistrement des résultats dans la base
-Base de données
-création des tables principales
-relations entre utilisateurs, parties, mini-jeux et scores
-insertion des données nécessaires au fonctionnement de l’application

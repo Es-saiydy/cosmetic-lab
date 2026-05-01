@@ -13,7 +13,7 @@ import { FaPumpSoap, FaJar, FaBottleDroplet } from "react-icons/fa6";
 
 function ResultatCreationProduit() {
   const navigate = useNavigate();
-  const { formData, resetJeu } = useOutletContext();
+  const { formData, resetJeu, timeLeft } = useOutletContext();
   const hasSaved = useRef(false);
 
   const {
@@ -38,12 +38,7 @@ function ResultatCreationProduit() {
   if (probleme === "seche") {
     if (typeProduit === "creme" || typeProduit === "serum") scoreEfficacite += 3;
     if (actif === "Acide hyaluronique" || actif === "Panthénol") scoreEfficacite += 5;
-    if (
-      phaseGrasse === "Huile d’amande douce" ||
-      phaseGrasse === "Beurre de karité"
-    ) {
-      scoreEfficacite += 1;
-    }
+    if (phaseGrasse === "Huile d’amande douce" || phaseGrasse === "Beurre de karité") {scoreEfficacite += 1;}
   }
 
   if (probleme === "sensible") {
@@ -118,12 +113,12 @@ function ResultatCreationProduit() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          valeur: scoreTotal,
-          temps: 0,
+          valeur: scoreTotal * 10,
+          temps: 300 - timeLeft,
           id_partie,
-          score_efficacite: scoreEfficacite,
-          score_securite: scoreSecurite,
-          score_environnement: scoreEnvironnement,
+          score_efficacite: scoreEfficacite * 10,
+          score_securite: scoreSecurite * 10,
+          score_environnement: scoreEnvironnement * 10,
         }),
       });
 
@@ -136,7 +131,7 @@ function ResultatCreationProduit() {
   };
 
   saveToDatabase();
-}, [scoreTotal]);
+}, [scoreTotal, scoreEfficacite, scoreSecurite, scoreEnvironnement, timeLeft]);
 
   let commentaire = "";
 

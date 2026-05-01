@@ -1,28 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, } from "react";
 import { useNavigate } from "react-router-dom";
 import API_URL from "../api";
 
-const ingredients = [
-  { id: 1, nom: "Glycérine", icon: "💧", famille: "Humectant", fonction: "Hydratation" },
-  { id: 2, nom: "Huile végétale", icon: "🌿", famille: "Phase grasse", fonction: "Nutrition" },
-  { id: 3, nom: "Acide hyaluronique", icon: "🔬", famille: "Actif", fonction: "Protection microbienne" },
-  { id: 4, nom: "Conservateur", icon: "🧪", famille: "Conservateur", fonction: "Action ciblée" },
-  { id: 5, nom: "Vitamine C", icon: "🍊", famille: "Actif", fonction: "Antioxydant" },
-  { id: 6, nom: "Beurre de karité", icon: "🧴", famille: "Phase grasse", fonction: "Nourrissant" },
-  { id: 7, nom: "Aloe vera", icon: "🌱", famille: "Humectant", fonction: "Apaisant" },
-  { id: 8, nom: "Niacinamide", icon: "🧪", famille: "Actif", fonction: "Régulateur de sébum" },
-  { id: 9, nom: "Hyaluronate de sodium", icon: "💧", famille: "Humectant", fonction: "Hydratation intense" },
-  { id: 10, nom: "Cire d'abeille", icon: "🐝", famille: "Phase grasse", fonction: "Protecteur" },
-  { id: 11, nom: "Extrait de thé vert", icon: "🍵", famille: "Actif", fonction: "Antioxydant" },
-  { id: 12, nom: "Parfum", icon: "🌸", famille: "Conservateur", fonction: "Parfumant" },
-  { id: 13, nom: "Collagène", icon: "🧬", famille: "Actif", fonction: "Anti-âge" },
-  { id: 14, nom: "Huile de coco", icon: "🥥", famille: "Phase grasse", fonction: "Hydratation" },
-  { id: 15, nom: "Extrait de rose", icon: "🌹", famille: "Actif", fonction: "Apaisant" },
-  { id: 16, nom: "Tocophérol", icon: "🧴", famille: "Conservateur", fonction: "Antioxydant" }
-];
-
 function MiniJeu2() {
   const navigate = useNavigate();
+  const [ingredients, setIngredients] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState(null);
@@ -31,9 +14,38 @@ function MiniJeu2() {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
   const [showTimeWarning, setShowTimeWarning] = useState(true);
+  const [familles, setFamilles] = useState([]);
 
   const token = localStorage.getItem("token");
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const [ingRes, famRes] = await Promise.all([
+        fetch(`${API_URL}/api/games/ingredients`),
+        fetch(`${API_URL}/api/games/familles`),
+      ]);
+      const ingData = await ingRes.json();
+      const famData = await famRes.json();
+
+      if (ingRes.ok) {
+        const shuffled = [...ingData].sort(() => Math.random() - 0.5).slice(0, 16);
+        setIngredients(shuffled);
+      }
+      if (famRes.ok) {
+        setFamilles(famData);
+      }
+    } catch (err) {
+      console.error("Erreur chargement data :", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchData();
+}, []);
+
   const ing = ingredients[current];
+
 
   // Timer 10 minutes
   useEffect(() => {
@@ -144,7 +156,7 @@ const saveToDatabase = useCallback(async () => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        valeur: score,
+        valeur: Math.round((score / ingredients.length) * 100),
         temps: time,
         id_partie,
       }),
@@ -173,12 +185,20 @@ const saveToDatabase = useCallback(async () => {
       },
     });
   }
-}, [token, score, time, navigate]);
+}, [token, score, time, navigate, ingredients.length]);
 
   const handleQuitter = () => {
     setIsRunning(false);
     saveToDatabase();
   };
+
+  if (loading || !ing) {
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Arial, sans-serif" }}>
+      <p style={{ fontSize: "20px", color: "#1976d2" }}>Chargement des ingrédients...</p>
+    </div>
+  );
+}
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8f9fa", padding: "30px 20px", fontFamily: "Arial, sans-serif", position: "relative" }}>
@@ -238,10 +258,10 @@ const saveToDatabase = useCallback(async () => {
             <div>
               <h3 style={{ textAlign: "center", marginBottom: "20px" }}>Famille</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {["Humectant", "Phase grasse", "Actif", "Conservateur"].map(fam => (
-                  <button key={fam} onClick={() => handleFamille(fam)}
-                    style={{ padding: "18px", background: selectedFamille === fam ? "#1976d2" : "#fff", color: selectedFamille === fam ? "white" : "black", border: "2px solid #ddd", borderRadius: "10px", fontSize: "17px", cursor: "pointer" }}>
-                    {fam}
+                {familles.map(f => (
+                  <button key={f.id_famille} onClick={() => handleFamille(f.libelle)}
+                  style={{ padding: "18px", background: selectedFamille === f.libelle ? "#1976d2" : "#fff", color: selectedFamille === f.libelle ? "white" : "black", border: "2px solid #ddd", borderRadius: "10px", fontSize: "17px", cursor: "pointer" }}>
+                  {f.libelle}
                   </button>
                 ))}
               </div>
@@ -250,10 +270,10 @@ const saveToDatabase = useCallback(async () => {
             <div>
               <h3 style={{ textAlign: "center", marginBottom: "20px" }}>Fonction</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {["Hydratation", "Nutrition", "Protection microbienne", "Action ciblée"].map(fonc => (
-                  <button key={fonc} onClick={() => handleFonction(fonc)}
-                    style={{ padding: "18px", background: selectedFonction === fonc ? "#1976d2" : "#fff", color: selectedFonction === fonc ? "white" : "black", border: "2px solid #ddd", borderRadius: "10px", fontSize: "17px", cursor: "pointer" }}>
-                    {fonc}
+                {familles.map(f => (
+                  <button key={f.id_famille} onClick={() => handleFonction(f.fonction)}
+                  style={{ padding: "18px", background: selectedFonction === f.fonction ? "#1976d2" : "#fff", color: selectedFonction === f.fonction ? "white" : "black", border: "2px solid #ddd", borderRadius: "10px", fontSize: "17px", cursor: "pointer" }}>
+                  {f.fonction}
                   </button>
                 ))}
               </div>
