@@ -194,8 +194,7 @@ Fonctionnalités backend réalisées :
 - récupération des données métier depuis la base (ingrédients, familles, problèmes de peau, défauts qualité)
 - routes d’administration avec restriction par middleware
 - routes statistiques avec agrégation SQL (COUNT, AVG, GROUP BY)
-- suppression utilisateur transactionnelle (BEGIN / COMMIT / ROLLBACK)
-- validation des données à l’inscription (format email, longueur mot de passe)
+- suppression d'utilisateur avec nettoyage des parties et scores associés
 
 Pour lancer le backend :
 cd cosmetic-lab-backend
