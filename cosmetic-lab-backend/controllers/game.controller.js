@@ -18,6 +18,7 @@ const getIngredients = async (req, res) => {
         i.nom,
         i.description,
         i.icon,
+        i.id_famille,
         f.libelle AS famille,
         f.fonction
       FROM ingredient i

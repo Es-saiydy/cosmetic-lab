@@ -192,6 +192,10 @@ const saveToDatabase = useCallback(async () => {
     saveToDatabase();
   };
 
+  const handleRetour = () => {
+  navigate("/dashboard");
+};
+
   if (loading || !ing) {
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Arial, sans-serif" }}>
@@ -205,7 +209,7 @@ const saveToDatabase = useCallback(async () => {
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
-          <button onClick={handleQuitter} style={{ padding: "12px 24px", background: "#555", color: "white", border: "none", borderRadius: "10px" }}>← Retour</button>
+          <button onClick={handleRetour} style={{ padding: "12px 24px", background: "#555", color: "white", border: "none", borderRadius: "10px" }}>← Retour</button>
 
           <div style={{ textAlign: "center" }}>
             <h1 style={{ margin: 0, color: "#0a4d8c", fontSize: "36px" }}>Cosmetic Lab</h1>
